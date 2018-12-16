@@ -1,4 +1,4 @@
-package com.intellimax.fileingressws;
+package com.intellimax.fileingressws.files;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,24 +18,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.intellimax.fileingressws.Application;
+
 
 @RestController
 public class FileController {
 	
-    static Logger log = Logger.getLogger(FileController.class);
-    static String fileStore = "tempFileStore";
+    public static final String HEADER_FILE_ID = "fileId";
+    public static final String HEADER_FILE_NAME = "fileName";
+    public static final String HEADER_FILE_TYPE = "fileType";
+	public static final String HEADER_DEVICE_MODEL = "deviceModel";
+	public static final String HEADER_DEVICE_SERIAL = "deviceSerial";
+	static Logger log = Logger.getLogger(FileController.class);
+    
     
     @PostMapping("/deviceFile" )
-    public ResponseEntity greeting(@RequestParam(value="deviceSerial") String deviceSerial,
-    		@RequestParam(value="deviceModel") String deviceModel,
-    		@RequestParam(value="fileType") String fileType,
-    		@RequestParam(value="fileName") String fileName,
-    		@RequestParam(value="fileId") String fileId,
+    public ResponseEntity greeting(@RequestParam(value=HEADER_DEVICE_SERIAL) String deviceSerial,
+    		@RequestParam(value=HEADER_DEVICE_MODEL) String deviceModel,
+    		@RequestParam(value=HEADER_FILE_TYPE) String fileType,
+    		@RequestParam(value=HEADER_FILE_NAME) String fileName,
+    		@RequestParam(value=HEADER_FILE_ID) String fileId,
     		InputStream dataStream) {
     	
     	try {
     	 
-    	    File targetFile = new File(fileStore + "/" + deviceModel + "/" + deviceSerial + "/" + fileType + "/" + fileId + "/" + fileName);
+    	    File targetFile = new File(Application.FILE_STORE + "/" + deviceModel + "/" + deviceSerial + "/" + fileType + "/" + fileId + "/" + fileName);
     	    targetFile.getParentFile().mkdirs();
     	    log.info("Writing file: " + targetFile.getAbsolutePath());
     	    OutputStream outStream = Files.newOutputStream(Paths.get(targetFile.getAbsolutePath()));
